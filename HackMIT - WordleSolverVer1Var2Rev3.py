@@ -1,7 +1,4 @@
-"""
-Solving Wordle puzzles with Python.
-See https://mathspp.com/blog/solving-wordle-with-python for an article on this.
-"""
+#stolen from https://adamfontenot.com/post/how_i_defeated_wordle_with_python
 
 import collections
 import enum
@@ -66,25 +63,23 @@ def filter_words(words, guess, score):
 
 
 def get_random_word(words):
-    print(f"I'll guess randomly from my pool of {len(words)} words...")
-    sample = ", ".join(words[:8])
-    end = ", among others..." if len(words) > 8 else "."
-    print(f"I'm considering {sample}{end}")
+    print(f"Word Pool: {len(words)} Words.")
     guess = random.choice(words)
-    print(f"Hmmm, I'll guess {guess!r}...")
+    print(f"Try {guess!r}.")
     return guess
 
 def play_with_computer(words):
-    print("What's the length of the secret word?")
     length = 5
     words = [word for word in words if len(word) == length]
+
+#This is the bit @31Carlton7 needs to care about: it needs to return the mapping in accordance with the following - the linking is his job. 
 
     mapping = {"0": Tip.ABSENT, "1": Tip.PRESENT, "2": Tip.CORRECT}
     print(f"\nNOTE: when typing scores, use {mapping}.\n")
     while len(words) > 1:
         guess = get_random_word(words)
-        print("How did this guess score?")
-        user_input = input(">>> ")
+        #print("How did this guess score?")
+        user_input = input(">>> ") #Right here, this should receive input from the front-end, go through the code, and return a response. This too is 31Carlton7's job. 
         sc = [mapping[char] for char in user_input if char in mapping]
         words = filter_words(words, guess, sc)
         print()
