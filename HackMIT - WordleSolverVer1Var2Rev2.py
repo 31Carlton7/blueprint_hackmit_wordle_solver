@@ -74,25 +74,9 @@ def get_random_word(words):
     print(f"Hmmm, I'll guess {guess!r}...")
     return guess
 
-
-def play_against_computer(words):
-    print("Write your secret word:")
-    secret = input(">>> ")
-
-    words = [word for word in words if len(word) == len(secret)]
-    while len(words) > 1:
-        guess = get_random_word(words)
-        sc = score(secret, guess)
-        print(f"\tMy guess scored {sc}...")
-        words = filter_words(words, guess, sc)
-        print()
-
-    return words
-
-
 def play_with_computer(words):
     print("What's the length of the secret word?")
-    length = int(input(">>> "))
+    length = 5
     words = [word for word in words if len(word) == length]
 
     mapping = {"0": Tip.ABSENT, "1": Tip.PRESENT, "2": Tip.CORRECT}
@@ -114,12 +98,7 @@ if __name__ == "__main__":
     with open(WORD_LST, "r") as f:
         words = [word.strip() for word in f.readlines()]
 
-    print("Do you want [h]elp, or do you want to play [a]gainst the computer?")
-    option = input("[h/a] >>> ")
-    if option.strip().lower() == "h":
-        words = play_with_computer(words)
-    else:
-        words = play_against_computer(words)
+    words = play_with_computer(words)
 
     if not words:
         raise RuntimeError("I don't know any words that could solve the puzzle...")
