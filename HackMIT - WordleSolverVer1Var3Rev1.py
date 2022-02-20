@@ -60,6 +60,7 @@ def filter_words(words, guess, score):
 def get_random_word(words):
     global guesses
     if guesses != 0:
+        guesses += 1
         print(f"Word Pool: {len(words)} Words.")
         guess = random.choice(words)
         print(f"Try {guess!r}.")
@@ -70,7 +71,7 @@ def get_random_word(words):
         return guess
     else:
         guesses += 1
-        guess = "soare"
+        guess = "share"
         file = open("GuessGiven.txt","w")
         file.write(guess)
         file.close()
