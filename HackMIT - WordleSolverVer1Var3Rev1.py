@@ -12,16 +12,6 @@ class Tip(enum.Enum):
     PRESENT = 1
     CORRECT = 2
 
-def levenshtein(a, b):
-    m = [[*range(len(a) + 1)] for _ in range(len(b) + 1)]
-    for i in range(len(b) + 1):
-        m[i][0] = i
-    for i in range(1, len(b) + 1):
-        for j in range(1, len(a) + 1):
-            m[i][j] = min(m[i-1][j] + 1, m[i][j-1] + 1, m[i-1][j-1] + (b[i-1] != a[j-1]))
-    return m[-1][-1]
-
-
 def score(secret, guess): 
     pool = collections.Counter(s for s, g in zip(secret, guess) if s != g)
     score = []
