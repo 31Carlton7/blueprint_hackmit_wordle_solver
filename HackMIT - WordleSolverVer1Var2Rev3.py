@@ -1,29 +1,28 @@
-#stolen from https://adamfontenot.com/post/how_i_defeated_wordle_with_python
+#Author: Andrey Kobyakov
 
 import collections
 import enum
 import random
 
+guesses = 0
 
 class Tip(enum.Enum):
     ABSENT = 0
     PRESENT = 1
     CORRECT = 2
 
+def levenshtein(a, b):
+    m = [[*range(len(a) + 1)] for _ in range(len(b) + 1)]
+    for i in range(len(b) + 1):
+        m[i][0] = i
+    for i in range(1, len(b) + 1):
+        for j in range(1, len(a) + 1):
+            m[i][j] = min(m[i-1][j] + 1, m[i][j-1] + 1, m[i-1][j-1] + (b[i-1] != a[j-1]))
+    return m[-1][-1]
 
-def score(secret, guess):
-    """Scores a guess word when compared to a secret word.
-    Makes sure that characters aren't over-counted when they are correct.
-    For example, a careless implementation would flag the first “s”
-    of “swiss” as PRESENT if the secret word were “chess”.
-    However, the first “s” must be flagged as ABSENT.
-    To account for this, we start by computing a pool of all the relevant characters
-    and then make sure to remove them as they get used.
-    """
 
-    # All characters that are not correct go into the usable pool.
+def score(secret, guess): 
     pool = collections.Counter(s for s, g in zip(secret, guess) if s != g)
-    # Create a first tentative score by comparing char by char.
     score = []
     for secret_char, guess_char in zip(secret, guess):
         if secret_char == guess_char:
@@ -33,17 +32,12 @@ def score(secret, guess):
             pool[guess_char] -= 1
         else:
             score.append(Tip.ABSENT)
-
     return score
 
 
 def filter_words(words, guess, score):
-    """Filter words to only keep those that respect the score for the given guess."""
-
     new_words = []
     for word in words:
-        # The pool of characters that account for the PRESENT ones is all the characters
-        # that do not correspond to CORRECT positions.
         pool = collections.Counter(c for c, sc in zip(word, score) if sc != Tip.CORRECT)
         for char_w, char_g, sc in zip(word, guess, score):
             if sc == Tip.CORRECT and char_w != char_g:
@@ -63,10 +57,17 @@ def filter_words(words, guess, score):
 
 
 def get_random_word(words):
-    print(f"Word Pool: {len(words)} Words.")
-    guess = random.choice(words)
-    print(f"Try {guess!r}.")
-    return guess
+    global guesses
+    if guesses != 0:
+        print(f"Word Pool: {len(words)} Words.")
+        guess = random.choice(words)
+        print(f"Try {guess!r}.")
+        return guess
+    else:
+        guesses += 1
+        guess = "soare"
+        print(f"Try {guess!r}.")
+        return guess
 
 def play_with_computer(words):
     length = 5
@@ -97,4 +98,4 @@ if __name__ == "__main__":
 
     if not words:
         raise RuntimeError("I don't know any words that could solve the puzzle...")
-    print(f"The secret word must be {words[0]!r}!")
+    print(f"The word is {words[0]!r}.")  
