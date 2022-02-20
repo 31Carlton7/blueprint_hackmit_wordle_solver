@@ -3,6 +3,7 @@
 import collections
 import enum
 import random
+#import nltk
 
 guesses = 0
 
@@ -62,10 +63,17 @@ def get_random_word(words):
         print(f"Word Pool: {len(words)} Words.")
         guess = random.choice(words)
         print(f"Try {guess!r}.")
+        file = open("GuessGiven.txt","w")
+        #file.truncate(0)
+        file.write(guess)
+        file.close()
         return guess
     else:
         guesses += 1
         guess = "soare"
+        file = open("GuessGiven.txt","w")
+        file.write(guess)
+        file.close()
         print(f"Try {guess!r}.")
         return guess
 
