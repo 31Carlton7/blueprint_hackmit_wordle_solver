@@ -71,7 +71,7 @@ def get_random_word(words):
         return guess
     else:
         guesses += 1
-        guess = "share"
+        guess = "soare"
         file = open("GuessGiven.txt","w")
         file.write(guess)
         file.close()
